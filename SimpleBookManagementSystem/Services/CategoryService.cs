@@ -23,6 +23,7 @@ namespace SimpleBookManagementSystem.Services
             //mapping
             CategoryResponseDto res = new CategoryResponseDto()
             {
+                Id = item.Id,
                 Title = item.Title,
                 CreatedAt = item.CreatedAt,
                 ModifiedAt = item.ModifiedAt
@@ -38,6 +39,7 @@ namespace SimpleBookManagementSystem.Services
             return (await _repo.GetAllAsync()).
                 Select(x => new CategoryResponseDto()
                 {
+                    Id = x.Id,
                     Title = x.Title,
                     CreatedAt = x.CreatedAt,
                     ModifiedAt = x.ModifiedAt
@@ -50,7 +52,7 @@ namespace SimpleBookManagementSystem.Services
             if (string.IsNullOrEmpty(categoryRequestDto.Title))
                 throw new ArgumentNullException("Category name must not be empty!");
 
-            if(categoryRequestDto.Title.Length < 3)
+            if (categoryRequestDto.Title.Length < 3)
                 throw new ArgumentException("Category title must be at least 3 characters long!");
 
             Category category = new Category()
@@ -65,6 +67,7 @@ namespace SimpleBookManagementSystem.Services
             //mapping
             CategoryResponseDto res = new CategoryResponseDto()
             {
+                Id = category.Id,
                 Title = category.Title,
                 CreatedAt = category.CreatedAt,
                 ModifiedAt = category.ModifiedAt
@@ -87,6 +90,7 @@ namespace SimpleBookManagementSystem.Services
 
             CategoryResponseDto res = new CategoryResponseDto()
             {
+                Id = item.Id,
                 Title = item.Title,
                 CreatedAt = item.CreatedAt,
                 ModifiedAt = item.ModifiedAt
@@ -104,6 +108,7 @@ namespace SimpleBookManagementSystem.Services
             await _repo.DeleteAsync(categoryId);
             CategoryResponseDto res = new CategoryResponseDto()
             {
+                Id = item.Id,
                 Title = item.Title,
                 CreatedAt = item.CreatedAt,
                 ModifiedAt = item.ModifiedAt
