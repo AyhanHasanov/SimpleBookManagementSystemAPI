@@ -1,0 +1,6 @@
+@SimpleBookManagementSystem_HostAddress = http://localhost:5105
+
+GET {{SimpleBookManagementSystem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
