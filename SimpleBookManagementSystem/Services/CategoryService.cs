@@ -13,8 +13,46 @@ namespace SimpleBookManagementSystem.Services
             _repo = repo;
         }
 
+        public async Task<CategoryResponseDto> GetCategoryByIdAsync(int categoryId)
+        {
+            var item = await _repo.GetByIdAsync(categoryId);
+
+            if (item == null)
+                throw new KeyNotFoundException();
+
+            //mapping
+            CategoryResponseDto res = new CategoryResponseDto()
+            {
+                Title = item.Title,
+                CreatedAt = item.CreatedAt,
+                ModifiedAt = item.ModifiedAt
+            };
+
+            return res;
+        }
+
+        public async Task<ICollection<CategoryResponseDto>> GetAllCategoriesAsync()
+        {
+            ICollection<CategoryResponseDto> result = new List<CategoryResponseDto>();
+
+            return (await _repo.GetAllAsync()).
+                Select(x => new CategoryResponseDto()
+                {
+                    Title = x.Title,
+                    CreatedAt = x.CreatedAt,
+                    ModifiedAt = x.ModifiedAt
+                })
+                .ToList();
+        }
         public async Task<CategoryResponseDto> CreateCategoryAsync(CategoryRequestDto categoryRequestDto)
         {
+
+            if (string.IsNullOrEmpty(categoryRequestDto.Title))
+                throw new ArgumentNullException("Category name must not be empty!");
+
+            if(categoryRequestDto.Title.Length < 3)
+                throw new ArgumentException("Category title must be at least 3 characters long!");
+
             Category category = new Category()
             {
                 Title = categoryRequestDto.Title,
@@ -34,21 +72,19 @@ namespace SimpleBookManagementSystem.Services
             return res;
         }
 
-        public Task<CategoryResponseDto> DeleteCategoryAsync(int categoryId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<ICollection<CategoryResponseDto>> GetAllCategoriesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<CategoryResponseDto> GetCategoryByIdAsync(int categoryId)
+        public async Task<CategoryResponseDto> UpdateCategoryAsync(int categoryId, CategoryRequestDto categoryRequestDto)
         {
             var item = await _repo.GetByIdAsync(categoryId);
 
-            //mapping
+            if (item == null)
+                throw new KeyNotFoundException();
+
+            item.Title = categoryRequestDto.Title;
+            item.ModifiedAt = DateTime.Now;
+
+            await _repo.UpdateAsync(item);
+
             CategoryResponseDto res = new CategoryResponseDto()
             {
                 Title = item.Title,
@@ -56,11 +92,23 @@ namespace SimpleBookManagementSystem.Services
                 ModifiedAt = item.ModifiedAt
             };
 
+            return res;
         }
-
-        public Task<CategoryResponseDto> UpdateCategoryAsync(int categoryId, CategoryRequestDto categoryRequestDto)
+        public async Task<CategoryResponseDto> DeleteCategoryAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            var item = await _repo.GetByIdAsync(categoryId);
+
+            if (item == null)
+                throw new KeyNotFoundException();
+
+            await _repo.DeleteAsync(categoryId);
+            CategoryResponseDto res = new CategoryResponseDto()
+            {
+                Title = item.Title,
+                CreatedAt = item.CreatedAt,
+                ModifiedAt = item.ModifiedAt
+            };
+            return res;
         }
     }
 }

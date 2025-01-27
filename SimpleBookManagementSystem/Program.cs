@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using SimpleBookManagementSystem.Data;
+using SimpleBookManagementSystem.Repository;
+using SimpleBookManagementSystem.Services;
 
 namespace SimpleBookManagementSystem
 {
@@ -19,6 +21,9 @@ namespace SimpleBookManagementSystem
             );
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IBookService, BookService>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
